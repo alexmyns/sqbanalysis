@@ -3,7 +3,7 @@ import pandas as pd
 
 # Предполагаем, что df уже загружен и подготовлен, а также есть колонка age_group
 
-df = pd.read_csv(r'C:\Users\AMinturganov\Downloads\archive (1)\train.csv', sep=';')
+df = pd.read_csv(r'train.csv', sep=';')
 
 # Добавим колонку с возрастными группами
 bins = [17, 25, 35, 45, 55, 100]

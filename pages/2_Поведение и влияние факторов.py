@@ -5,7 +5,7 @@ import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 
 # Предполагается, что у вас уже загружен датафрейм df
-df = pd.read_csv(r'C:\Users\AMinturganov\Downloads\archive (1)\train.csv', sep=';')
+df = pd.read_csv(r'train.csv', sep=';')
 df = df.reset_index(drop=True)
 
 st.title("Анализ подписок на депозит — Поведение и влияние факторов")

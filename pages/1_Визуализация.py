@@ -7,8 +7,7 @@ fig = make_subplots(rows=1, cols=3)
 
 
 # Загрузи данные
-df = pd.read_csv(
-    r'C:\Users\AMinturganov\Downloads\archive (1)\train.csv', sep=';')
+df = pd.read_csv(r'train.csv', sep=';')
 
 # ctgrs = [col.value_counts().reset_index() for col in df.columns]
 
