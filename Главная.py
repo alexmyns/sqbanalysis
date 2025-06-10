@@ -1,16 +1,13 @@
 import streamlit as st
 import pandas as pd
 
-# Предполагаем, что df уже загружен и подготовлен, а также есть колонка age_group
 
 df = pd.read_csv(r'train.csv', sep=';')
 
-# Добавим колонку с возрастными группами
 bins = [17, 25, 35, 45, 55, 100]
 labels = ['18-25', '26-35', '36-45', '46-55', '56+']
 df['age_group'] = pd.cut(df['age'], bins=bins, labels=labels)
 
-# Основные метрики
 total_clients = df.shape[0]
 subscribed = df[df["y"]=="yes"].shape[0]
 not_subscribed = df[df["y"]=="no"].shape[0]
@@ -38,7 +35,6 @@ least_populous_group = age_group_counts.idxmin()
 median_balance = round(df["balance"].median(), 1)
 median_age = round(df["age"].median(), 1)
 
-# Заголовок
 st.title("📊 Анализ ключевых метрик")
 
 # 1️⃣ Общее количество клиентов

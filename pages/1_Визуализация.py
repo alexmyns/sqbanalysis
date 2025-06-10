@@ -5,8 +5,6 @@ import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 fig = make_subplots(rows=1, cols=3)
 
-
-# Загрузи данные
 df = pd.read_csv(r'train.csv', sep=';')
 
 # ctgrs = [col.value_counts().reset_index() for col in df.columns]
@@ -37,7 +35,6 @@ df_month_counts.columns = ['Month', 'Count']
 
 st.title("📊 Маркетинговый анализ банка")
 
-# Sidebar - выбор анализа
 analysis_type = st.sidebar.selectbox(
     "Выберите тип анализа:",
     [
@@ -112,11 +109,9 @@ if analysis_type == "Распределение по возрасту":
 elif analysis_type == "Анализ по типу работы":
     st.header("Распределение клиентов по типу работы")
 
-    # Подсчет количества по типу работы и подписке
     job_subscribe_counts = df.groupby(
         ['job', 'y']).size().reset_index(name='Count')
 
-    # Построение графика с разбивкой по подписке (y)
     fig = px.bar(
         job_subscribe_counts,
         x='job',
@@ -155,11 +150,9 @@ elif analysis_type == "Анализ по типу работы":
 elif analysis_type == "Семейное положение":
     st.header("Анализ семейного положения клиентов")
 
-    # Подсчет количества по семейному положению
     df_marital_counts = df['marital'].value_counts().reset_index()
     df_marital_counts.columns = ['Marital Status', 'Count']
 
-    # Круговая диаграмма с дыркой (donut)
     fig = px.pie(
         df_marital_counts,
         names='Marital Status',
@@ -192,14 +185,12 @@ elif analysis_type == "Семейное положение":
 elif analysis_type == "Образование":
     st.header("Анализ образования клиентов")
 
-    # Подсчет количества клиентов по уровню образования
     df_education_counts = df['education'].value_counts().reset_index()
     df_education_counts.columns = ['Education', 'Count']
 
     col1, col2 = st.columns(2)
 
     with col1:
-        # Столбчатая диаграмма
         fig_bar = px.bar(
             df_education_counts,
             x='Education',
@@ -215,7 +206,6 @@ elif analysis_type == "Образование":
         st.plotly_chart(fig_bar, use_container_width=True)
 
     with col2:
-        # Круговая диаграмма (donut)
         fig_pie = px.pie(
             df_education_counts,
             names='Education',
@@ -226,10 +216,8 @@ elif analysis_type == "Образование":
         )
         fig_pie.update_traces(marker=dict(line=dict(color='#000000', width=1.4)),
                               textposition='outside', textinfo='percent+label')
-        # fig_pie.update_layout(title_x=0.5)
         st.plotly_chart(fig_pie, use_container_width=True)
 
-    # Подсчет процентов для инсайтов
     total_clients = df.shape[0]
     primary_pct = (df_education_counts.loc[df_education_counts['Education'] == 'primary', 'Count'].values[0] /
                    total_clients) * 100 if 'primary' in df_education_counts['Education'].values else 0
@@ -248,14 +236,10 @@ elif analysis_type == "Образование":
     """)
 
 elif analysis_type == "Кредиты & займы":
-    # st.header("Анализ кредитов и займов клиентов")
-
-    # Подсчет значений для default, housing и loan
     df_default_counts = df['default'].value_counts()
     df_housing_counts = df['housing'].value_counts()
     df_loan_counts = df['loan'].value_counts()
 
-    # Создаем три круговые диаграммы на одном холсте
     fig = make_subplots(rows=1, cols=3, specs=[[{"type": "pie"}, {"type": "pie"}, {"type": "pie"}]],
                         subplot_titles=('Кредит в дефолте', 'Ипотечный кредит', 'Персональный кредит'))
 
@@ -294,7 +278,6 @@ elif analysis_type == "Кредиты & займы":
 
     st.plotly_chart(fig, use_container_width=True)
 
-    # Инсайты
     st.markdown("""
     **Insight 📊:**  
     - Большинство клиентов не имеют housing loan и personal loan.
@@ -305,11 +288,9 @@ elif analysis_type == "Кредиты & займы":
 elif analysis_type == "Тип контакта":
     st.header("Тип контакта с клиентами")
     
-    # Подсчет количества каждого типа контакта
     df_contact_counts = df["contact"].value_counts().reset_index()
     df_contact_counts.columns = ["Contact", "Count"]
     
-    # Круговая диаграмма
     fig = px.pie(
         df_contact_counts,
         names="Contact",
@@ -335,11 +316,9 @@ elif analysis_type == "Тип контакта":
 elif analysis_type == "Месяц контакта":
     st.header("Месяц последнего контакта")
     
-    # Подсчет количества контактов по месяцам
     df_month_counts = df["month"].value_counts().reset_index()
     df_month_counts.columns = ["Month", "Count"]
     
-    # Бар-чарт для количества контактов
     fig = px.bar(
         df_month_counts.sort_values(by="Month"),
         x="Month",
@@ -361,13 +340,11 @@ elif analysis_type == "Месяц контакта":
 elif analysis_type == "Результат предыдущей кампании":
     st.header("Результат предыдущей маркетинговой кампании")
     
-    # Подсчет количества по результатам предыдущей кампании
     df_poutcome_counts = df["poutcome"].value_counts().reset_index()
     df_poutcome_counts.columns = ["Poutcome", "Count"]
     
     col1, col2 = st.columns(2)
     with col1:
-        # Бар-чарт
         fig_bar = px.bar(
             df_poutcome_counts,
             x="Poutcome",
@@ -380,7 +357,6 @@ elif analysis_type == "Результат предыдущей кампании"
         fig_bar.update_traces(marker=dict(line=dict(color="#000000", width=1.2)))
         st.plotly_chart(fig_bar, use_container_width=True)
     with col2:
-        # Пай-чарт
         fig_pie = px.pie(
             df_poutcome_counts,
             names="Poutcome",
@@ -402,13 +378,11 @@ elif analysis_type == "Результат предыдущей кампании"
 elif analysis_type == "Влияние предыдущих кампаний":
     st.header("Влияние предыдущих кампаний")
     
-    # Подготовка данных
     st.markdown("""
     - **previous**: Количество предыдущих контактов перед текущей кампанией.
     - **pdays**: Количество дней, прошедших с последнего контакта (или -1, если не связывались).
     """)
     
-    # Гистограмма previous
     fig_previous = px.histogram(
         df, x="previous",
         nbins=20, color_discrete_sequence=["Teal"],
@@ -417,7 +391,6 @@ elif analysis_type == "Влияние предыдущих кампаний":
     fig_previous.update_layout(title_x=0.5)
     st.plotly_chart(fig_previous, use_container_width=True)
     
-    # Гистограмма pdays (исключаем -1)
     fig_pdays = px.histogram(
         df[df["pdays"] != -1],
         x="pdays",
@@ -427,7 +400,6 @@ elif analysis_type == "Влияние предыдущих кампаний":
     fig_pdays.update_layout(title_x=0.5)
     st.plotly_chart(fig_pdays, use_container_width=True)
     
-    # Insight
     st.markdown("""
     **Insight 📊:**  
     - Положительная история взаимодействия (успех ранее) → более высокая подписка.
@@ -437,14 +409,11 @@ elif analysis_type == "Влияние предыдущих кампаний":
 elif analysis_type == "Средний баланс по профессиям":
     st.header("Средний баланс по профессиям")
     
-    # Группировка данных
     avg_balance_by_job = df.groupby('job', as_index=False)['balance'].mean()
     avg_balance_by_job['balance'] = avg_balance_by_job['balance'].round(1)
     
-    # Сортировка по среднему балансу
     avg_balance_by_job = avg_balance_by_job.sort_values(by='balance', ascending=False)
     
-    # Визуализация
     fig = px.bar(
         avg_balance_by_job,
         x='job',
@@ -458,7 +427,6 @@ elif analysis_type == "Средний баланс по профессиям":
     fig.update_layout(title_x=0.5, showlegend=False, xaxis_title='Тип работы', yaxis_title='Средний баланс')
     st.plotly_chart(fig, use_container_width=True)
     
-    # Insight
     st.markdown("""
     **Insight 📊:**  
     - Наибольший средний баланс у management и self-employed.
@@ -468,7 +436,6 @@ elif analysis_type == "Средний баланс по профессиям":
 
 elif analysis_type == "Распределение возраста по семейному положению":
     st.header("Распределение возраста по семейному положению")
-    
     fig = px.box(
         df,
         x='marital',
@@ -479,7 +446,6 @@ elif analysis_type == "Распределение возраста по семе
     )
     
     st.plotly_chart(fig, use_container_width=True)    
-    # Insight
     st.markdown("""
     **Insight 📊:**  
     - Married — более старшие клиенты.
@@ -502,7 +468,6 @@ elif analysis_type == "Распределение возраста по обра
     fig.update_layout(title_x=0.5, legend_title_text="<b>Образование")
     st.plotly_chart(fig, use_container_width=True)
     
-    # Insight
     st.markdown("""
     **Insight 📊:**  
     - Более молодые — в группе secondary.
@@ -513,12 +478,10 @@ elif analysis_type == "Распределение возраста по обра
 elif analysis_type == "Подписки на депозит по месяцам":
     st.header("Подписки на депозит по месяцам")
 
-    # Подготовка данных
     deposits_by_month = df.groupby(['month', 'y'], as_index=False)['age'].count().rename(columns={'age': 'Count'})
     deposits_by_month['percent'] = round(deposits_by_month['Count'] * 100 / deposits_by_month.groupby('month')['Count'].transform('sum'), 1)
     deposits_by_month['percent'] = deposits_by_month['percent'].apply(lambda x: f'{x}%')
 
-    # График
     fig = px.bar(
         deposits_by_month,
         x='month',
@@ -538,7 +501,6 @@ elif analysis_type == "Подписки на депозит по месяцам"
 
     st.plotly_chart(fig, use_container_width=True)
 
-    # Insight
     st.markdown("""
     **Insight📊:**  
     - Подписки выше в mar, apr, jun.
@@ -548,7 +510,6 @@ elif analysis_type == "Подписки на депозит по месяцам"
 elif analysis_type == "Роль ипотечного и персонального кредита в подписках":
     st.header("Роль housing/personal loan в подписках на депозит")
     
-    # Housing loan
     a = df.groupby(['housing', 'y'], as_index=False).size().rename(columns={'size':'Count'})
     fig1 = px.bar(
         a, x='housing', y='Count', color='y', barmode='group',
@@ -556,7 +517,6 @@ elif analysis_type == "Роль ипотечного и персональног
         color_discrete_sequence=['MediumPurple', 'YellowGreen']
     )
     
-    # Personal loan
     b = df.groupby(['loan', 'y'], as_index=False).size().rename(columns={'size':'Count'})
     fig2 = px.bar(
         b, x='loan', y='Count', color='y', barmode='group',
@@ -577,11 +537,9 @@ elif analysis_type == "Роль ипотечного и персональног
 elif analysis_type == "Подписки по возрастным группам":
     st.header("Подписки на депозит по возрастным группам")
     
-    # Создаём колонку age_group
     df['age_group'] = pd.cut(df['age'], bins=[18, 25, 35, 45, 55, 100],
                               labels=['18-25', '26-35', '36-45', '46-55', '56+'])
     
-    # Группировка
     a = df.groupby(['age_group', 'y'], as_index=False).size().rename(columns={'size':'Count'})
     
     fig = px.bar(

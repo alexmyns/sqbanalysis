@@ -4,18 +4,15 @@ import plotly.express as px
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 
-# Предполагается, что у вас уже загружен датафрейм df
 df = pd.read_csv(r'train.csv', sep=';')
 df = df.reset_index(drop=True)
 
 st.title("Анализ подписок на депозит — Поведение и влияние факторов")
 
-# Добавим колонку с возрастными группами
 bins = [17, 25, 35, 45, 55, 100]
 labels = ['18-25', '26-35', '36-45', '46-55', '56+']
 df['age_group'] = pd.cut(df['age'], bins=bins, labels=labels)
 
-# 1. Подписки на депозит по возрастным группам
 st.header("Подписки на депозит по возрастным группам")
 age_group_data = df.groupby(['age_group', 'y'], as_index=False)['age'].count().rename(columns={'age': 'Count'})
 
@@ -24,10 +21,10 @@ age_group_data['Percent'] = age_group_data.groupby('age_group')['Count'].transfo
 fig_age = px.bar(
     age_group_data,
     x='age_group',
-    y='Percent',  # здесь — процент вместо количества
+    y='Percent', 
     color='y',
     barmode='group',
-    text='Percent',  # это подписи
+    text='Percent',  
     labels={'y': 'Подписка на депозит', 'age_group': 'Возрастная группа'}
 )
 st.plotly_chart(fig_age, use_container_width=True)
@@ -103,7 +100,6 @@ st.markdown("""
 - Например, у married management подписка выше, чем у student single.
 """)
 
-# Можно добавить фильтры, чтобы выбирать возраст, наличие кредитов, диапазон баланса и смотреть изменение подписок
 
 st.sidebar.header("Фильтры")
 age_filter = st.sidebar.multiselect("Возрастные группы", options=labels, default=labels)
@@ -121,7 +117,6 @@ if deposit_filter != 'все':
 
 st.markdown(f"**Отфильтровано записей: {len(df_filtered)}**")
 
-# Повторим, например, график подписок по возрастным группам для отфильтрованных данных
 age_group_data_f = df_filtered.groupby(['age_group', 'y'], as_index=False)['age'].count().rename(columns={'age': 'Count'})
 age_group_data_f['Percent'] = age_group_data_f.groupby('age_group')['Count'].transform(lambda x: round(100 * x / x.sum(), 1))
 
